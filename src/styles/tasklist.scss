@@ -132,9 +132,6 @@ section.task-list.container {
     margin-top: 0.5rem;
 
     .task {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
       padding: 0.6rem 0.25rem;
       border-bottom: 1px solid var(--line);
       animation: fade-in 0.2s ease;
@@ -150,6 +147,11 @@ section.task-list.container {
         z-index: 10;
         cursor: grabbing;
       }
+
+      .task-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
 
       .grip {
         flex-shrink: 0;
@@ -256,6 +258,40 @@ section.task-list.container {
         }
       }
 
+      .subtask-count {
+        flex-shrink: 0;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--ink-soft);
+      }
+
+      .subtask-toggle {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        background: transparent;
+        border-radius: 6px;
+        color: var(--ink-soft);
+        transition: background 0.15s, color 0.15s;
+
+        &:hover {
+          background: var(--indigo-soft);
+          color: var(--indigo);
+        }
+
+        svg {
+          transition: transform 0.15s ease;
+        }
+
+        &.is-expanded svg {
+          transform: rotate(90deg);
+        }
+      }
+
       .remove {
         flex-shrink: 0;
         width: 28px;
@@ -280,6 +316,187 @@ section.task-list.container {
       .remove:focus-visible {
         opacity: 1;
       }
+      }
+
+      .subtasks-panel {
+        margin: 0.6rem 0 0.2rem 2.5rem;
+        padding-left: 0.75rem;
+        border-left: 2px solid var(--line);
+
+        .subtask-input-row {
+          display: flex;
+          gap: 0.4rem;
+          margin-bottom: 0.4rem;
+
+          input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid var(--line);
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.5rem 0.7rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            transition: border-color 0.15s, background 0.15s;
+
+            &::placeholder {
+              color: var(--ink-soft);
+            }
+
+            &:focus {
+              outline: none;
+              border-color: var(--indigo);
+              background: var(--surface);
+            }
+          }
+
+          button {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: var(--radius-sm);
+            background: var(--indigo);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: filter 0.15s, transform 0.1s;
+
+            &:hover {
+              filter: brightness(1.1);
+            }
+
+            &:active {
+              transform: scale(0.92);
+            }
+          }
+        }
+
+        ul.subtasks {
+          list-style: none;
+
+          .subtask {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            animation: fade-in 0.2s ease;
+
+            &.is-dragging {
+              background: var(--surface);
+              box-shadow: 0 4px 16px rgba(20, 20, 40, 0.1);
+              border-radius: var(--radius-sm);
+              z-index: 10;
+              cursor: grabbing;
+            }
+
+            .grip {
+              flex-shrink: 0;
+              width: 16px;
+              height: 16px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: 0;
+              background: transparent;
+              border-radius: 4px;
+              color: var(--ink-soft);
+              cursor: grab;
+              touch-action: none;
+              transition: background 0.15s, color 0.15s;
+
+              &:hover {
+                background: var(--indigo-soft);
+                color: var(--indigo);
+              }
+
+              &:active {
+                cursor: grabbing;
+              }
+
+              .grip-dots {
+                display: grid;
+                grid-template-columns: repeat(2, 2px);
+                grid-template-rows: repeat(3, 2px);
+                gap: 2px;
+
+                i {
+                  width: 2px;
+                  height: 2px;
+                  border-radius: 50%;
+                  background: currentColor;
+                }
+              }
+            }
+
+            .dot {
+              flex-shrink: 0;
+              width: 14px;
+              height: 14px;
+              border-radius: 50%;
+              border: 2px solid var(--line);
+              background: transparent;
+              transition: background 0.15s, border-color 0.15s, transform 0.1s;
+
+              &:hover {
+                border-color: var(--indigo);
+              }
+
+              &:active {
+                transform: scale(0.88);
+              }
+
+              &.is-checked {
+                background: var(--sage);
+                border-color: var(--sage);
+              }
+            }
+
+            p {
+              flex: 1;
+              min-width: 0;
+              font-size: 0.85rem;
+              color: var(--ink);
+              word-break: break-word;
+              transition: color 0.15s;
+
+              &.is-complete {
+                color: var(--ink);
+                opacity: 0.6;
+                text-decoration: line-through;
+                text-decoration-color: currentColor;
+                text-decoration-thickness: 1px;
+              }
+            }
+
+            .remove {
+              flex-shrink: 0;
+              width: 22px;
+              height: 22px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: 0;
+              background: transparent;
+              border-radius: 6px;
+              color: var(--ink-soft);
+              opacity: 0;
+              transition: opacity 0.15s, background 0.15s, color 0.15s;
+
+              &:hover {
+                background: rgba(198, 93, 77, 0.1);
+                color: var(--coral);
+              }
+            }
+
+            &:hover .remove,
+            .remove:focus-visible {
+              opacity: 1;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -297,7 +514,8 @@ section.task-list.container {
 
 // Em telas touch não há hover: mantém o botão de remover sempre visível (mais discreto)
 @media (hover: none) {
-  section.task-list.container ul.tasks .task .remove {
+  section.task-list.container ul.tasks .task .remove,
+  section.task-list.container ul.tasks .task .subtasks .subtask .remove {
     opacity: 0.6;
   }
 }

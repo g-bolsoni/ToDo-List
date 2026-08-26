@@ -20,12 +20,7 @@ import '../styles/tasklist.scss'
 
 import { FiPlus } from 'react-icons/fi'
 import { TaskItem } from './TaskItem'
-
-interface Task {
-  id: string;
-  title: string;
-  isComplete: boolean;
-}
+import type { Task } from '../types/task'
 
 const STORAGE_KEY = '@todolist:tasks';
 
@@ -96,6 +91,40 @@ export function TaskList() {
     setTasks(prev => prev.map(task => task.id === id ? { ...task, title } : task));
   }
 
+  function handleAddSubtask(taskId: string, title: string) {
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) return;
+
+    setTasks(prev => prev.map(task => task.id === taskId ? {
+      ...task,
+      subtasks: [...(task.subtasks ?? []), { id: crypto.randomUUID(), title: trimmedTitle, isComplete: false }],
+    } : task));
+  }
+
+  function handleToggleSubtask(taskId: string, subtaskId: string) {
+    setTasks(prev => prev.map(task => task.id === taskId ? {
+      ...task,
+      subtasks: task.subtasks?.map(subtask => subtask.id === subtaskId ? {
+        ...subtask,
+        isComplete: !subtask.isComplete,
+      } : subtask),
+    } : task));
+  }
+
+  function handleRemoveSubtask(taskId: string, subtaskId: string) {
+    setTasks(prev => prev.map(task => task.id === taskId ? {
+      ...task,
+      subtasks: task.subtasks?.filter(subtask => subtask.id !== subtaskId),
+    } : task));
+  }
+
+  function handleReorderSubtasks(taskId: string, oldIndex: number, newIndex: number) {
+    setTasks(prev => prev.map(task => task.id === taskId ? {
+      ...task,
+      subtasks: task.subtasks ? arrayMove(task.subtasks, oldIndex, newIndex) : task.subtasks,
+    } : task));
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -163,6 +192,10 @@ export function TaskList() {
                     onToggle={handleToggleTaskCompletion}
                     onRemove={handleRemoveTask}
                     onRename={handleRenameTask}
+                    onAddSubtask={handleAddSubtask}
+                    onToggleSubtask={handleToggleSubtask}
+                    onRemoveSubtask={handleRemoveSubtask}
+                    onReorderSubtasks={handleReorderSubtasks}
                   />
                 ))}
               </ul>
