@@ -92,6 +92,10 @@ export function TaskList() {
     setTasks(prev => prev.filter(task => task.id !== id));
   }
 
+  function handleRenameTask(id: string, title: string) {
+    setTasks(prev => prev.map(task => task.id === id ? { ...task, title } : task));
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -158,6 +162,7 @@ export function TaskList() {
                     task={task}
                     onToggle={handleToggleTaskCompletion}
                     onRemove={handleRemoveTask}
+                    onRename={handleRenameTask}
                   />
                 ))}
               </ul>
